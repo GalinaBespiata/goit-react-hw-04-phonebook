@@ -6,18 +6,19 @@ import { FormAddContacts } from './FormAddContacts/FormAddContacts';
 import { nanoid } from 'nanoid';
 
 export function App() {
-  const [contacts, setContacts] = useState(
-    JSON.parse(localStorage.getItem('contacts')) ?? []
-  );
+  const [contacts, setContacts] = useState(() => {
+    return JSON.parse(localStorage.getItem('contacts')) ?? [];
+  });
   const [filter, setFilter] = useState('');
 
   useEffect(() => {
-    if (contacts === []) return;
     localStorage.setItem('contacts', JSON.stringify(contacts));
   }, [contacts]);
 
   const addContact = contact => {
-    if (contacts.some(el => el.name === contact.name)) {
+    if (
+      contacts.some(el => el.name.toLowerCase() === contact.name.toLowerCase())
+    ) {
       alert('!!!');
       return;
     }
@@ -30,9 +31,9 @@ export function App() {
   };
 
   const onDeleteContact = contactId => {
-    setContacts(() => {
-      contacts.filter(contact => contact.id !== contactId);
-    });
+    setContacts(prevContacts =>
+      prevContacts.filter(contact => contact.id !== contactId)
+    );
   };
 
   const filteredContacts = contacts.filter(contact =>
@@ -43,7 +44,7 @@ export function App() {
       style={{
         border: '2px solid #4b193e',
         padding: '40px',
-        height: '100vh',
+
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'flex-end',
